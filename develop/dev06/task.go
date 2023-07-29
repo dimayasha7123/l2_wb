@@ -66,12 +66,12 @@ func main() {
 	if inputFile == "" {
 		input = flag.Arg(0)
 	} else {
-		bytes, err := os.ReadFile(inputFile)
+		data, err := os.ReadFile(inputFile)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "can't read file %s: %v\n", inputFile, err)
 			os.Exit(1)
 		}
-		input = string(bytes)
+		input = string(data)
 	}
 
 	if len(input) == 0 {
