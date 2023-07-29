@@ -125,9 +125,9 @@ func sortUtility(data []byte, set settings) ([]byte, error) {
 		}
 
 		if sorted {
-			return nil, nil
+			return []byte{}, nil
 		}
-		return nil, errors.New("неправильный порядок")
+		return []byte{}, errors.New("неправильный порядок")
 	}
 
 	if set.Reverse {
@@ -314,6 +314,8 @@ func parseHumanNumeric(s string) (float64, error) {
 		power = 21
 	case 'y':
 		power = 24
+	default:
+		return 0, errors.New("bad suffix")
 	}
 
 	return num * math.Pow(10, float64(power)), nil
