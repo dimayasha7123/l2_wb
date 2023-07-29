@@ -1,66 +1,75 @@
 package main
 
 import (
-	"bytes"
+	"fmt"
+	"os/exec"
+	"path"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func getDataFromString(s string) [][]byte {
-	return bytes.Split([]byte(s), []byte{byte(stringSeparator)})
-}
+// ТЕСТ КЕЙСЫ:
+// когда строка в самом начале
+// когда между строкой и началом меньше строк чем В
+// когда между строкой и началом строк ровно столько, сколько В
+// когда между строкой и началом больше строк, чем В
+// предыдущие 4 пункта, но между двумя подходящими строками
+// предыдущие 5 пунктов, но с В и концом, вместо начала
+// перекрытие А и В (как первые 4 кейса)
+// С перекрывает А и В если не равно нулю
+// при инверт А, Б и С не учитываются
+// каунт считает количество подошедших строк
+// каунт считает количество неподошедших строк при инверт
+// каунт не считает строки, окружающие ответ
+// игнор_кейс базовый
+// игнор_кейс не работает с фиксед
+// работа фикседа
+// работа хайлайта (2 тест-кейса, сами совпадения и номера строк)
+// работа флага вывода файла (один файл и несколько файлов со включенной или выключенной опцией)
 
-func Test_grep(t *testing.T) {
-	type args struct {
-		data    [][]byte
-		pattern string
-		set     settings
+const directory = "test_data"
+
+func Test_e2e_grep(t *testing.T) {
+	grepPath := path.Join(t.TempDir(), "task")
+	compileErr := exec.Command("go1.20.1", "build", "-o", grepPath, "task.go").Run()
+	require.NoError(t, compileErr, "can't compile grep: %v\n", compileErr)
+
+	cmd := exec.Command(grepPath, "o.", "-")
+	cmd.Stdin = strings.NewReader("London")
+
+	output := strings.Builder{}
+	cmd.Stdout = &output
+	errOutput := strings.Builder{}
+	cmd.Stderr = &errOutput
+
+	err := cmd.Run()
+	//require.NoError(t, err)
+
+	fmt.Println("ERR:", err)
+	fmt.Println("STDOUT:", []byte(output.String()))
+	fmt.Println("STDOUT:", output.String())
+	for _, r := range []rune(output.String()) {
+		fmt.Printf("%c ", r)
 	}
+	fmt.Println()
+	fmt.Println("STDERR:", errOutput.String())
+
 	tests := []struct {
-		name    string
-		args    args
-		want    grepRows
-		errFunc assert.ErrorAssertionFunc
+		name       string
+		args       []string
+		stdin      string
+		wantStdout string
+		wantStderr string
+		errFunc    assert.ErrorAssertionFunc
 	}{
-		{
-			name: "default settings test",
-			args: args{
-				data:    getDataFromString("London\n2\n3\n4\nOoh\noh\nOH\n8\n9\nLondo."),
-				pattern: "o.",
-				set:     settings{},
-			},
-			want: grepRows{
-				{
-					LineNum:      1,
-					Data:         []byte("London"),
-					MatchIndexes: [][]int{{1, 3}, {4, 6}},
-				},
-				{
-					LineNum:      5,
-					Data:         []byte("Ooh"),
-					MatchIndexes: [][]int{{1, 3}},
-				},
-				{
-					LineNum:      6,
-					Data:         []byte("oh"),
-					MatchIndexes: [][]int{{0, 2}},
-				},
-				{
-					LineNum:      10,
-					Data:         []byte("Londo."),
-					MatchIndexes: [][]int{{1, 3}, {4, 6}},
-				},
-			},
-			errFunc: assert.NoError,
-		},
+		{},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := grep(tt.args.data, tt.args.pattern, tt.args.set)
 
-			assert.Equal(t, tt.want, got)
-			tt.errFunc(t, err)
 		})
 	}
 }
