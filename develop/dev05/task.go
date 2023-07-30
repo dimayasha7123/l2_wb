@@ -42,7 +42,7 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Использование grep:\n")
 		fmt.Fprintf(os.Stderr, "grep [ФЛАГ]... ШАБЛОН [ФАЙЛ]...\n")
-		fmt.Fprintf(os.Stderr, "Если в качестве первого файла указан \"-\", то будет считан STDIN")
+		fmt.Fprintf(os.Stderr, "Если в качестве первого файла указан \"-\", то будет считан STDIN\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()

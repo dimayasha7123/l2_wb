@@ -1,0 +1,6 @@
+Файл "test_data/file1.txt":
+London
+potomki
+Файл "test_data/file2.txt":
+potomki
+pogoda
