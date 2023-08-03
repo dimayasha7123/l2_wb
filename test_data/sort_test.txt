@@ -1,6 +1,0 @@
-bbbbb wrefwrf SEP
-aaaaa 9999k JAN
-ccccc 1111m FEB aaaa
-ccccc 1111m FEB
-ccccc 1111m FEB
-London 123 Loh

@@ -1,4 +1,4 @@
-package pattern
+package facade
 
 /*
 	Реализовать паттерн «фасад».
